@@ -23,7 +23,7 @@ const MaterialList = () => {
   const fetchMaterials = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_MATERIALS}?populate=*`, {
+      const response = await fetch(`${API_MATERIALS}?populate=*&sort=material:asc`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

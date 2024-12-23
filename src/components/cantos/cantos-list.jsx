@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Typography, Button, Modal, Form, Input, message } from "antd";
 
 const { Title } = Typography;
@@ -17,7 +17,7 @@ const EdgeList = () => {
   const fetchEdges = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:1337/api/cantos", {
+      const response = await fetch("http://localhost:1337/api/cantos?sort=code:asc", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

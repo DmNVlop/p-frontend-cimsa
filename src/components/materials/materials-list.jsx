@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Table, Typography, Button, Modal, Form, Input, Select, message } from "antd";
+import { useEffect, useState } from "react";
+import { Table, Typography, Button, Modal, Form, Input, Select, message, Row, Col } from "antd";
 
-const { Title } = Typography;
 const { Option } = Select;
 
 const API_MATERIALS = "http://localhost:1337/api/materials";
@@ -171,15 +170,30 @@ const MaterialList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Typography.Title level={2}>Gestión de Materiales</Typography.Title>
-      <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
-        Añadir Material
-      </Button>
-      <Table dataSource={materials} columns={columns} rowKey={(record) => record.documentId} loading={loading} />
+      <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+        <Col>
+          <Typography.Title level={3}>Gestión de Materiales</Typography.Title>
+        </Col>
+        <Col>
+          <Button type="primary" onClick={handleAdd}>
+            Añadir Material
+          </Button>
+        </Col>
+      </Row>
+
+      <Table
+        dataSource={materials}
+        columns={columns}
+        rowKey={(record) => record.documentId}
+        loading={loading}
+        onRow={(record) => ({
+          onDoubleClick: () => handleEdit(record),
+        })}
+      />
 
       <Modal
         title={editingMaterial ? "Editar Material" : "Añadir Material"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => {
           form
@@ -217,12 +231,17 @@ const MaterialList = () => {
           <Form.Item
             name="defaultEdge"
             label="Canto por Defecto"
-            rules={[{ required: true, message: "Por favor, selecciona el canto por defecto" }]}>
+            rules={[{ required: false, message: "Por favor, selecciona el canto por defecto" }]}>
             <Select placeholder="Selecciona un canto">
               {edges.map((edge) => (
-                <Option key={edge.documentId} value={edge.documentId}>
-                  {edge.code}
-                </Option>
+                <>
+                  <Option key={null} value={null}>
+                    {""}
+                  </Option>
+                  <Option key={edge.documentId} value={edge.documentId}>
+                    {edge.code}
+                  </Option>
+                </>
               ))}
             </Select>
           </Form.Item>

@@ -1,14 +1,19 @@
-import { DatabaseOutlined, LogoutOutlined, ProfileOutlined, RobotOutlined } from "@ant-design/icons";
-import { Button, Layout, Menu } from "antd";
+import { DatabaseOutlined, LogoutOutlined, MenuUnfoldOutlined, ProfileOutlined, RobotOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Layout, Menu, Space } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import { Link, Navigate, Route, Routes } from "react-router-dom";
-import PrivateRoute from "../components/private-route/private-route";
-import OrderList from "../components/orders/orders-list";
-import MaterialList from "../components/materials/materials-list";
-import EdgeList from "../components/cantos/cantos-list";
-import UserList from "../components/users/users-list";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useUser } from "../context/user-context";
+import AuthRoutes from "../components/routes/auth-routes";
 
 function NavbarHeader() {
+  const { user } = useUser();
+  const location = useLocation(); // Obtiene la ubicación actual
+  const navigate = useNavigate();
+
+  // Determina la clave del menú activa basada en la URL
+  const currentPath = location.pathname.split("/")[1]; // Obtiene el primer segmento de la ruta
+  const activeKey = currentPath || "ordenes";
+
   const items = [
     {
       key: "ordenes",
@@ -25,12 +30,34 @@ function NavbarHeader() {
       icon: <RobotOutlined />,
       label: <Link to="/cantos">Cantos</Link>,
     },
-    {
+    user?.role?.name == "Admin" && {
       key: "usuarios",
-      icon: <RobotOutlined />,
+      icon: <UserOutlined />,
       label: <Link to="/usuarios">Usuarios</Link>,
+    }, // Solo muestra "Usuarios" si el rol es Admin
+  ].filter(Boolean); // Elimina elementos falsos o nulos
+  // ];
+
+  const itemsProfileMenu = [
+    {
+      label: "Perfil",
+      key: "1",
+      icon: <UserOutlined />,
+      onClick: () => navigate(`/perfil`),
+      // disabled: true,
+    },
+    {
+      label: "Cerrar Sessión",
+      key: "2",
+      icon: <LogoutOutlined />,
+      danger: true,
+      onClick: () => handleLogout(),
     },
   ];
+
+  const menuProps = {
+    items: itemsProfileMenu,
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -52,50 +79,35 @@ function NavbarHeader() {
             flex: 0.9,
             display: "flex",
             height: "100%",
+            maxWidth: "auto",
           }}>
-          <Link to="/" style={{ height: "100%", display: "flex" }}>
+          <Link to="/" style={{ height: "100%", display: "flex" }} title="Ir a inicio | Órdenes">
             <img src="/logos/LogoPedidosCIMSA_150_Wh.png" alt="Logo Pedidos CIMSA" style={{ objectFit: "contain" }} />
           </Link>
         </div>
-        <Menu theme="dark" mode="horizontal" items={items} />
-        <Button type="primary" shape="circle" icon={<LogoutOutlined />} size={"large"} onClick={handleLogout} />
+
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          items={items}
+          selectedKeys={[activeKey]}
+          style={{
+            flex: 1,
+            whiteSpace: "nowrap",
+          }}
+        />
+
+        <Dropdown menu={menuProps}>
+          <Button>
+            <Space>
+              {user?.username || "Usuario"}
+              <MenuUnfoldOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
       </Header>
       <Content style={{ padding: "24px" }}>
-        <Routes>
-          <Route path="*" element={<Navigate to="/ordenes" replace />} />
-          <Route
-            path="/ordenes"
-            element={
-              <PrivateRoute>
-                <OrderList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/materiales"
-            element={
-              <PrivateRoute>
-                <MaterialList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/cantos"
-            element={
-              <PrivateRoute>
-                <EdgeList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/usuarios"
-            element={
-              <PrivateRoute>
-                <UserList />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
+        <AuthRoutes />
       </Content>
     </Layout>
   );

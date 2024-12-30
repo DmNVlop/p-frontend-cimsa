@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Typography, Button, Modal, Form, Input, message } from "antd";
+import { Table, Typography, Button, Modal, Form, Input, message, Row, Col } from "antd";
 
 const { Title } = Typography;
 
@@ -113,15 +113,30 @@ const EdgeList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Title level={2}>Gestión de Cantos</Title>
-      <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
-        Añadir Canto
-      </Button>
-      <Table dataSource={edges} columns={columns} rowKey={(record) => record.documentId} loading={loading} />
+      <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+        <Col>
+          <Title level={3}>Gestión de Cantos</Title>
+        </Col>
+        <Col>
+          <Button type="primary" onClick={handleAdd}>
+            Añadir Canto
+          </Button>
+        </Col>
+      </Row>
+
+      <Table
+        dataSource={edges}
+        columns={columns}
+        rowKey={(record) => record.documentId}
+        loading={loading}
+        onRow={(record) => ({
+          onDoubleClick: () => handleEdit(record),
+        })}
+      />
 
       <Modal
         title={editingEdge ? "Editar Canto" : "Añadir Canto"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => {
           form

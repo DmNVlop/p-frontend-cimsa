@@ -1,101 +1,31 @@
-import { useEffect, useState } from "react";
-import { Table, Typography, Button, Modal, Form, Input, Select, message } from "antd";
+import { useState } from "react";
+import { Table, Typography, Button, Modal, Form, Input, Select, Row, Col } from "antd";
+import { useUsers } from "./../../hooks/useUsersComp";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const API_USERS = "http://localhost:1337/api/users";
-
-const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+const UserListView = () => {
+  const { users, loading, saveUser, deleteUser } = useUsers();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_USERS, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUsers(data);
-      } else {
-        throw new Error(data.error?.message || "Error desconocido");
-      }
-    } catch (error) {
-      message.error(`Error al cargar los usuarios: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${API_USERS}/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response.ok) {
-        message.success("Usuario eliminado correctamente");
-        fetchUsers();
-      } else {
-        const data = await response.json();
-        throw new Error(data.error?.message || "Error desconocido");
-      }
-    } catch (error) {
-      message.error(`Error al eliminar el usuario: ${error.message}`);
-    }
-  };
-
   const handleEdit = (user) => {
     setEditingUser(user);
-    form.setFieldsValue(user);
+    form.setFieldsValue({ ...user, password: "" });
     setIsModalVisible(true);
   };
 
   const handleAdd = () => {
     setEditingUser(null);
-    form.resetFields();
+    // form.resetFields();
+    form.setFieldsValue({ username: "", email: "", password: "", role: "" });
     setIsModalVisible(true);
   };
 
-  const handleSubmit = async (values) => {
-    try {
-      const method = editingUser ? "PUT" : "POST";
-      const url = editingUser ? `${API_USERS}/${editingUser.id}` : API_USERS;
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        message.success(`Usuario ${editingUser ? "editado" : "creado"} correctamente`);
-        setIsModalVisible(false);
-        fetchUsers();
-      } else {
-        throw new Error(data.error?.message || "Error desconocido");
-      }
-    } catch (error) {
-      message.error(`Error al guardar el usuario: ${error.message}`);
-    }
+  const handleSubmit = (values) => {
+    saveUser(values, !!editingUser).then(() => setIsModalVisible(false));
   };
 
   const columns = [
@@ -122,7 +52,7 @@ const UserList = () => {
           <Button type="link" onClick={() => handleEdit(record)}>
             Editar
           </Button>
-          <Button type="link" danger onClick={() => handleDelete(record.id)}>
+          <Button type="link" danger onClick={() => deleteUser(record.id)}>
             Eliminar
           </Button>
         </div>
@@ -132,28 +62,48 @@ const UserList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Title level={2}>Gestión de Usuarios</Title>
-      <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
-        Añadir Usuario
-      </Button>
-      <Table dataSource={users} columns={columns} rowKey={(record) => record.id} loading={loading} />
+      <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+        <Col>
+          <Title level={3}>Gestión de Usuarios</Title>
+        </Col>
+        <Col>
+          <Button type="primary" onClick={handleAdd}>
+            Añadir Usuario
+          </Button>
+        </Col>
+      </Row>
+
+      <Table
+        dataSource={users}
+        columns={columns}
+        rowKey={(record) => record.id}
+        loading={loading}
+        onRow={(record) => ({
+          onDoubleClick: () => handleEdit(record),
+        })}
+      />
 
       <Modal
         title={editingUser ? "Editar Usuario" : "Añadir Usuario"}
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
+        open={isModalVisible}
+        onCancel={() => {
+          setIsModalVisible(false);
+          form.resetFields(); // Limpia el formulario al cerrar el modal
+        }}
         onOk={() => {
           form
             .validateFields()
             .then((values) => {
-              form.resetFields();
+              form.resetFields(); // Limpia el formulario después de la validación
               handleSubmit(values);
             })
-            .catch((info) => {
-              console.error("Validate Failed:", info);
-            });
+            .catch((info) => console.error("Error al validar:", info));
         }}>
-        <Form form={form} layout="vertical" name="userForm">
+        <Form
+          form={form}
+          layout="vertical"
+          name="userForm"
+          initialValues={editingUser || { username: "", email: "", password: "", role: "" }}>
           <Form.Item name="username" label="Nombre" rules={[{ required: true, message: "Por favor, ingresa el nombre de usuario" }]}>
             <Input />
           </Form.Item>
@@ -165,8 +115,8 @@ const UserList = () => {
           </Form.Item>
           <Form.Item name="role" label="Rol" rules={[{ required: true, message: "Por favor, selecciona un rol" }]}>
             <Select placeholder="Selecciona un rol">
-              <Option value="admin">Admin</Option>
-              <Option value="comercial">Comercial</Option>
+              <Option value="Admin">Admin</Option>
+              <Option value="Comercial">Comercial</Option>
             </Select>
           </Form.Item>
         </Form>
@@ -175,4 +125,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default UserListView;

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { message } from "antd";
+import config from "../config";
 
-const API_ORDERS = "http://localhost:1337/api/pedidos";
+const apiUrl = config.apiUrl;
+const API_ORDERS = `${apiUrl}/pedidos`;
 
 export const useOrders = () => {
   const [orders, setOrders] = useState([]);

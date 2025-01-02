@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Table, Typography, Button, Modal, Form, Input, Select, message, Row, Col } from "antd";
+import config from "../../config";
 
 const { Option } = Select;
 
-const API_MATERIALS = "http://localhost:1337/api/materials";
-const API_EDGES = "http://localhost:1337/api/cantos";
+const apiUrl = config.apiUrl;
+const API_MATERIALS = `${apiUrl}/materials`;
+const API_EDGES = `${apiUrl}/cantos`;
 
 const MaterialList = () => {
   const [materials, setMaterials] = useState([]);

@@ -25,7 +25,8 @@ const OrderListView = () => {
     {
       title: "Num. Piezas",
       key: "numeroDePiezas",
-      render: (text, record) => record.piezas?.length || 0,
+      dataIndex: "numeroDePiezas",
+      // render: (text, record) => record.piezas?.length || 0,
     },
     {
       title: "Creado",

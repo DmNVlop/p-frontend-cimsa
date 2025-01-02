@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Select, Button, message, Typography, Row, Col } from "antd";
+import config from "../../config";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const API_MATERIALS = "http://localhost:1337/api/materials";
-const API_EDGES = "http://localhost:1337/api/cantos";
+const apiUrl = config.apiUrl;
+const API_MATERIALS = `${apiUrl}/materials`;
+const API_EDGES = `${apiUrl}/cantos`;
 
 // Configurar la posición del contenedor de mensajes
 message.config({
@@ -79,8 +81,11 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
         await onSave(values);
       } else {
         // Si estamos creando una nueva pieza
-        console.log("🚀 ~ handleSubmit ~ values:", values);
-        const response = await fetch("http://localhost:1337/api/piezas", {
+        console.log("🚀 ~ handleSubmit ~ values:", {
+          ...values,
+          pedido: orderId,
+        });
+        const response = await fetch(`${apiUrl}/piezas`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

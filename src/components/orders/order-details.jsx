@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Table, Typography, message, Button, Popconfirm } from "antd";
 import PieceForm from "../piezas/insert-piece";
 import { useParams } from "react-router-dom";
+import config from "../../config";
 
-const API_PIECES = "http://localhost:1337/api/piezas";
+const apiUrl = config.apiUrl;
+const API_PIECES = `${apiUrl}/piezas`;
 
 const OrderDetail = () => {
   const { id: orderId } = useParams();

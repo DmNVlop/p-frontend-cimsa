@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { message } from "antd";
+import config from "../config";
 
-const API_USERS = "http://localhost:1337/api/users?populate[role][fields][0]=name";
+const apiUrl = config.apiUrl;
+const API_USERS = `${apiUrl}/users?populate[role][fields][0]=name`;
 
 export const useUsers = () => {
   const [users, setUsers] = useState([]);

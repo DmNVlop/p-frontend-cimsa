@@ -1,8 +1,12 @@
+import config from "../../config";
+
+const apiUrl = config.apiUrl;
+
 const fetchUserData = async () => {
   const token = localStorage.getItem("token"); // Obtén el token del almacenamiento local
 
   try {
-    const response = await fetch("http://localhost:1337/api/users/me?populate[role][fields][0]=name", {
+    const response = await fetch(`${apiUrl}/users/me?populate[role][fields][0]=name`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Incluye el token en el encabezado

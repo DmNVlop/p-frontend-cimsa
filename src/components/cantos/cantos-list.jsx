@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Table, Typography, Button, Modal, Form, Input, message, Row, Col } from "antd";
+import config from "../../config";
 
 const { Title } = Typography;
+
+const apiUrl = config.apiUrl;
 
 const EdgeList = () => {
   const [edges, setEdges] = useState([]);
@@ -17,7 +20,7 @@ const EdgeList = () => {
   const fetchEdges = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:1337/api/cantos?sort=code:asc", {
+      const response = await fetch(`${apiUrl}/cantos?sort=code:asc`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -33,7 +36,7 @@ const EdgeList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:1337/api/cantos/${documentId}`, {
+      await fetch(`${apiUrl}/cantos/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -61,7 +64,7 @@ const EdgeList = () => {
   const handleSubmit = async (values) => {
     try {
       const method = editingEdge ? "PUT" : "POST";
-      const url = editingEdge ? `http://localhost:1337/api/cantos/${editingEdge.documentId}` : "http://localhost:1337/api/cantos";
+      const url = editingEdge ? `${apiUrl}/cantos/${editingEdge.documentId}` : `${apiUrl}/cantos`;
 
       await fetch(url, {
         method,

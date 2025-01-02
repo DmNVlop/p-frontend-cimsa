@@ -2,6 +2,10 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 import { useState } from "react";
 
+import config from "../../config";
+
+const apiUrl = config.apiUrl;
+
 const LoginForm = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Nuevo estado para el loading
@@ -11,7 +15,7 @@ const LoginForm = () => {
     setError(null); // Limpiar errores previos
 
     try {
-      const response = await fetch("http://localhost:1337/api/auth/local", {
+      const response = await fetch(`${apiUrl}/auth/local`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

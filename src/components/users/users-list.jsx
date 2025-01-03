@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Table, Typography, Button, Modal, Form, Input, Select, Row, Col } from "antd";
 import { useUsers } from "./../../hooks/useUsersComp";
+import { USER_ROLES } from "../../common/common-variables";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -19,9 +20,10 @@ const UserListView = () => {
 
   const handleAdd = () => {
     setEditingUser(null);
-    // form.resetFields();
     form.setFieldsValue({ username: "", email: "", password: "", role: "" });
+    // form.resetFields();
     setIsModalVisible(true);
+    console.log("🚀 ~ handleAdd ~ form:", form.getFieldValue());
   };
 
   const handleSubmit = (values) => {
@@ -43,7 +45,7 @@ const UserListView = () => {
       title: "Rol",
       dataIndex: "role",
       key: "role",
-      render: (role) => role?.name || "Sin rol",
+      render: (role) => USER_ROLES[role?.name]?.name || "Sin rol",
     },
     {
       title: "Acciones",
@@ -105,18 +107,18 @@ const UserListView = () => {
           name="userForm"
           initialValues={editingUser || { username: "", email: "", password: "", role: "" }}>
           <Form.Item name="username" label="Nombre" rules={[{ required: true, message: "Por favor, ingresa el nombre de usuario" }]}>
-            <Input />
+            <Input autoComplete="off" />
           </Form.Item>
           <Form.Item name="email" label="Email" rules={[{ required: true, message: "Por favor, ingresa el email" }]}>
-            <Input type="email" />
+            <Input type="email" autoComplete="off" />
           </Form.Item>
           <Form.Item name="password" label="Contraseña" rules={[{ required: !editingUser, message: "Por favor, ingresa la contraseña" }]}>
-            <Input.Password />
+            <Input.Password autoComplete="off" />
           </Form.Item>
           <Form.Item name="role" label="Rol" rules={[{ required: true, message: "Por favor, selecciona un rol" }]}>
             <Select placeholder="Selecciona un rol">
-              <Option value="Admin">Admin</Option>
-              <Option value="Comercial">Comercial</Option>
+              <Option value={USER_ROLES.Admin.role}>{USER_ROLES.Admin.name}</Option>
+              <Option value={USER_ROLES.Comercial.role}>{USER_ROLES.Comercial.name}</Option>
             </Select>
           </Form.Item>
         </Form>

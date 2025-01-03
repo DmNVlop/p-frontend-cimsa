@@ -124,7 +124,9 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ minWidth: "174px" }}>
             <Form.Item name="material" label="Material" rules={[{ required: true, message: "Por favor, selecciona un material" }]}>
               <Select placeholder="Selecciona un material" allowClear>
-                <Option value={""} key={null}></Option>
+                <Option key="empty" value="">
+                  - Ninguno -
+                </Option>
                 {materials.map((material) => (
                   <Option key={material.documentId} value={material.documentId}>
                     {material.material}
@@ -136,7 +138,9 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ width: "64px" }}>
             <Form.Item name="veta" label="Veta">
               <Select placeholder="Selecciona la veta" allowClear>
-                <Option value={""} key={null}></Option>
+                <Option key="empty" value="">
+                  - Ninguno -
+                </Option>
                 <Option value="L">L</Option>
                 <Option value="A">A</Option>
               </Select>
@@ -160,8 +164,8 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ minWidth: "128px" }}>
             <Form.Item name="cantoL1" label="Canto Largo 1">
               <Select placeholder="Selecciona un canto" allowClear onChange={(value) => form.setFieldsValue({ cantoL1: value || null })}>
-                <Option value="" key={null}>
-                  Ninguno
+                <Option key="empty" value="">
+                  - Ninguno -
                 </Option>
                 {edges.map((edge) => (
                   <Option key={edge.documentId} value={edge.documentId}>
@@ -174,8 +178,8 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ minWidth: "128px" }}>
             <Form.Item name="cantoL2" label="Canto Largo 2">
               <Select placeholder="Selecciona un canto" allowClear onChange={(value) => form.setFieldsValue({ cantoL2: value || null })}>
-                <Option value="" key={null}>
-                  Ninguno
+                <Option key="empty" value="">
+                  - Ninguno -
                 </Option>
                 {edges.map((edge) => (
                   <Option key={edge.documentId} value={edge.documentId}>
@@ -188,8 +192,8 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ minWidth: "128px" }}>
             <Form.Item name="cantoA1" label="Canto Ancho 1">
               <Select placeholder="Selecciona un canto" allowClear onChange={(value) => form.setFieldsValue({ cantoA1: value || null })}>
-                <Option value="" key={null}>
-                  Ninguno
+                <Option key="empty" value="">
+                  - Ninguno -
                 </Option>
                 {edges.map((edge) => (
                   <Option key={edge.documentId} value={edge.documentId}>
@@ -202,8 +206,8 @@ const PieceForm = ({ orderId, onSuccess, initialValues, onSave, onCancel }) => {
           <Col style={{ minWidth: "128px" }}>
             <Form.Item name="cantoA2" label="Canto Ancho 2">
               <Select placeholder="Selecciona un canto" allowClear onChange={(value) => form.setFieldsValue({ cantoA2: value || null })}>
-                <Option value="" key={null}>
-                  Ninguno
+                <Option key="empty" value="">
+                  - Ninguno -
                 </Option>
                 {edges.map((edge) => (
                   <Option key={edge.documentId} value={edge.documentId}>

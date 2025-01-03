@@ -217,6 +217,7 @@ const MaterialList = () => {
             label="Veta"
             rules={[{ required: false }, { type: "string", message: "Por favor selecciona una opción válida" }]}>
             <Select allowClear placeholder="Selecciona una veta">
+              <Option value="">- Ninguno -</Option>
               <Option value="L">L</Option>
               <Option value="A">A</Option>
             </Select>
@@ -235,15 +236,13 @@ const MaterialList = () => {
             label="Canto por Defecto"
             rules={[{ required: false, message: "Por favor, selecciona el canto por defecto" }]}>
             <Select placeholder="Selecciona un canto">
+              <Option key="empty" value="">
+                - Ninguno -
+              </Option>
               {edges.map((edge) => (
-                <>
-                  <Option key={null} value={null}>
-                    {""}
-                  </Option>
-                  <Option key={edge.documentId} value={edge.documentId}>
-                    {edge.code}
-                  </Option>
-                </>
+                <Option key={edge.documentId} value={edge.documentId}>
+                  {edge.code}
+                </Option>
               ))}
             </Select>
           </Form.Item>

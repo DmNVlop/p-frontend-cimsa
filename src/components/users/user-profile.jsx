@@ -1,26 +1,21 @@
 import { useState } from "react";
-import { Card, Avatar, Typography, Button, Form, Input, Select, Modal, Row, Col } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-
 const { Title, Text } = Typography;
 const { Option } = Select;
+import { Card, Avatar, Typography, Button, Form, Input, Select, Modal, Row, Col } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { useUser } from "../../context/user-context";
+import { USER_ROLES } from "../../common/common-variables";
 
 const UserProfile = () => {
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modal de edición
-  const [form] = Form.useForm();
+  const { user } = useUser();
 
-  // Información del usuario simulada
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Admin",
-    avatar: "",
-  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [form] = Form.useForm();
 
   // Guardar los cambios del perfil
   const handleSave = (values) => {
-    setUser({ ...user, ...values });
-    setIsEditing(false);
+    // setUser({ ...user, ...values });
+    // setIsEditing(false);
   };
 
   return (
@@ -28,14 +23,14 @@ const UserProfile = () => {
       <Card>
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} sm={6} style={{ textAlign: "center" }}>
-            <Avatar size={100} icon={<UserOutlined />} src={user.avatar} style={{ marginBottom: "10px" }} />
+            <Avatar size={100} icon={<UserOutlined />} src={""} style={{ marginBottom: "10px" }} />
             <Text type="secondary" style={{ display: "block" }}>
-              {user.role}
+              {user?.role?.name || "Rol"}
             </Text>
           </Col>
           <Col xs={24} sm={18}>
-            <Title level={4}>{user.name}</Title>
-            <Text type="secondary">{user.email}</Text>
+            <Title level={4}>{user?.username || "Usuario"}</Title>
+            <Text type="secondary">{user?.email || "Correo Electrónico"}</Text>
             <div style={{ marginTop: "20px" }}>
               <Button type="primary" onClick={() => setIsEditing(true)}>
                 Editar Perfil
@@ -73,13 +68,13 @@ const UserProfile = () => {
           </Form.Item>
           <Form.Item name="role" label="Rol">
             <Select>
-              <Option value="Admin">Admin</Option>
-              <Option value="User">User</Option>
+              <Option value={USER_ROLES.Admin.role}>{USER_ROLES.Admin.name}</Option>
+              <Option value={USER_ROLES.Comercial.role}>{USER_ROLES.Comercial.name}</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="avatar" label="Foto de perfil">
+          {/* <Form.Item name="avatar" label="Foto de perfil">
             <Input placeholder="URL de tu foto de perfil" />
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </Modal>
     </div>

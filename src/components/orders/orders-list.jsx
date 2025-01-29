@@ -1,15 +1,49 @@
-import { Button, Table, Typography, Modal, Form, Input } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Button, Table, Typography, Modal, Form, Input, Spin } from "antd";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 import { useUser } from "../../context/user-context";
-import { useState } from "react";
 import { useOrders } from "../../hooks/useOrders";
+import Loading from "../../shared/loading";
 
 const OrderListView = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const { orders, loading, createOrder, formatDate } = useOrders();
+  const { orders, loading, createOrder, formatDate, findOrderByCode } = useOrders();
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Leer los parámetros de la URL
+  const [searchParams] = useSearchParams();
+  const orderCode = searchParams.get("c"); // Valor del parámetro 'c'
+  const orderName = searchParams.get("n"); // Valor del parámetro 'n'
+
+  useEffect(() => {
+    const handleOrderCode = async () => {
+      if (orderCode) {
+        try {
+          setLoadingMessage("Verificando Número de Pedido...");
+
+          // Buscar si la orden existe
+          const existingOrder = await findOrderByCode(orderCode);
+
+          if (existingOrder) {
+            navigate(`/ordenes/${existingOrder.documentId}`);
+            return;
+          }
+
+          setLoadingMessage("Creando pedido...");
+          const { data } = await createOrder({ code: orderCode, nombre: orderName });
+          navigate(data?.documentId ? `/ordenes/${data.documentId}` : "/ordenes");
+        } catch (error) {
+          console.error("Error manejando la orden:", error);
+        }
+      }
+    };
+
+    handleOrderCode();
+  }, [orderCode]);
 
   const columns = [
     {
@@ -52,6 +86,8 @@ const OrderListView = () => {
 
   return (
     <div className="container mx-auto p-4">
+      {loading && <Loading loadingMessage={loadingMessage} />}
+
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
         <Typography.Title level={3}>Listado de Órdenes</Typography.Title>
         {user?.role?.name === "Admin" && (

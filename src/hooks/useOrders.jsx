@@ -46,6 +46,7 @@ export const useOrders = () => {
       if (response.ok) {
         message.success("Orden creada correctamente");
         fetchOrders(); // Actualiza las órdenes
+        return data;
       } else {
         throw new Error(data.error?.message || "Error desconocido");
       }
@@ -64,6 +65,29 @@ export const useOrders = () => {
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
 
+  const findOrderByCode = async (code) => {
+    try {
+      const response = await fetch(`${API_ORDERS}?filters[code][$eq]=${code}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("🚀 ~ findOrderByCode ~ response:", response);
+      const data = await response.json();
+      console.log("🚀 ~ findOrderByCode ~ data:", data);
+      if (response.ok) {
+        return data.data[0];
+      }
+      return;
+      // else {
+      //   throw new Error(data.error?.message || "Error desconocido");
+      // }
+    } catch (error) {
+      message.error(`Error al buscar la orden: ${error.message}`);
+      return null;
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -74,5 +98,6 @@ export const useOrders = () => {
     fetchOrders,
     createOrder,
     formatDate,
+    findOrderByCode,
   };
 };

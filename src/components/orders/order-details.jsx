@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Typography, message, Button, Popconfirm } from "antd";
+import { Table, Typography, message, Button } from "antd";
 import PieceForm from "../piezas/insert-piece";
 import { useParams } from "react-router-dom";
 import config from "../../config";
@@ -77,8 +77,6 @@ const OrderDetail = () => {
       cantoA1: piece?.cantoA1?.documentId,
       cantoA2: piece?.cantoA2?.documentId,
     };
-
-    console.log("🚀 ~ handleEdit ~ pieceData.cantoA2:", pieceData);
 
     setEditingPiece({ id: piece.documentId, data: pieceData }); // Establecer pieza en edición
   };

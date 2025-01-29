@@ -54,7 +54,7 @@ const UserProfile = () => {
             .catch((info) => console.error("Error al validar:", info));
         }}>
         <Form form={form} layout="vertical" initialValues={user}>
-          <Form.Item name="name" label="Nombre" rules={[{ required: true, message: "Por favor, ingresa tu nombre" }]}>
+          <Form.Item name="username" label="Nombre" rules={[{ required: true, message: "Por favor, ingresa tu nombre" }]}>
             <Input />
           </Form.Item>
           <Form.Item
